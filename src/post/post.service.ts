@@ -9,6 +9,6 @@ export class PostService {
   }
 
   async findAll() {
-    return this.prisma.post.findMany();
+    return await this.prisma.post.findMany();
   }
 }
