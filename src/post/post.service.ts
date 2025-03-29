@@ -25,4 +25,16 @@ export class PostService {
   async count() {
     return this.prisma.post.count()
   }
+
+  findOne(id: number) {
+    return this.prisma.post.findFirst({
+      where: {
+        id
+      },
+      include: {
+        author: true,
+        tags: true
+      }
+    })
+  }
 }
