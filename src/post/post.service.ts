@@ -1,4 +1,4 @@
-import {Injectable, UnauthorizedException} from '@nestjs/common';
+import {Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 import {DEFAULT_PAGE_SIZE} from "../constants";
 import {CreatePostInput} from "./dto/create-post.input";
@@ -144,5 +144,33 @@ export class PostService {
         }
       }
     })
+  }
+
+  async delete(
+    {
+      postId,
+      userId
+    }: {
+      postId: number;
+      userId: number
+    }
+  ) {
+    const authorIdMatched = await this.prisma.post.findUnique({
+      where: {
+        id: postId,
+        authorId: userId
+      }
+    })
+
+    if(!authorIdMatched) throw new NotFoundException()
+
+    const result = await this.prisma.post.delete({
+      where: {
+        id: postId,
+        authorId: userId
+      }
+    })
+
+    return !!result
   }
 }
